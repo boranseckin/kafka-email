@@ -30,11 +30,11 @@ kafka-consumer-groups --group [GROUP_ID] --describe --bootstrap-server [KAFKA_BO
 ## Usage
 
 Start one producer by running:
-```js
+```
 node producer.js
 ```
 
 Start as many consumers as the amount of partitions by running:
-```js
+```
 node consumer.js
 ```
