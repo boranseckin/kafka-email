@@ -24,21 +24,24 @@ const consumer = Kafka.consumer({ groupId: process.env.GROUP_ID });
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            const email = JSON.parse(message.value);
-
-            // await new Promise((resolve) => {
-            //     setTimeout(resolve, 1000);
-            // });
-            // console.log('done', email._id);
-
-            const info = await transporter.sendMail(email);
-            console.log(`Message sent: ${info.messageId}`);
-            console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+            try {
+                const email = JSON.parse(message.value);
+                const info = await transporter.sendMail(email);
+                console.log(`Message sent: ${info.messageId}`);
+                console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+            } catch (error) {
+                console.error(error);
+            }
         },
     });
 
     process.on('SIGINT', async () => {
-        await consumer.disconnect();
+        try {
+            await consumer.disconnect();
+        } catch (e) {
+            console.error('Failed to gracefully disconnect consumer', e);
+        }
+
         process.exit(0);
     })
 })().catch(async (error) => {
