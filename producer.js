@@ -11,7 +11,8 @@ const producer = kafka.producer();
     setInterval(async () => {
         try {
             const _id = Math.random().toString().slice(-10);
-            const responses = await producer.send({
+            console.time(`produce - ${_id}`)
+            await producer.send({
                 topic: process.env.TOPIC,
                 messages: [{
                     key: _id,
@@ -25,9 +26,9 @@ const producer = kafka.producer();
                     }),
                 }],
             });
-    
+            console.timeEnd(`produce - ${_id}`)
+            
             i += 1;
-            console.log('Published message', { responses });
         } catch (error) {
             console.log('Error publishing message', error);
         }
