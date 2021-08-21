@@ -27,14 +27,20 @@ docker compose exec broker bash
 kafka-consumer-groups --group [GROUP_ID] --describe --bootstrap-server [KAFKA_BOOTSTRAP_SERVER]
 ```
 
-## Usage
+## Usage for Kafka
 
 Start one producer by running:
 ```
-node producer.js
+node kafka/producer.js
 ```
 
 Start as many consumers as the amount of partitions by running:
 ```
-node consumer.js
+node kafka/consumer.js
+```
+
+## Usage for BullJS
+
+```
+node bulljs/scheduler.js
 ```
