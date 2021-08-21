@@ -23,7 +23,8 @@ const consumer = Kafka.consumer({ groupId: process.env.GROUP_ID });
     });
 
     const transporter = nodemailer.createTransport({
-        SES: { ses, aws }
+        SES: { ses, aws },
+        sendingRate: 20,
     });
 
     await consumer.run({
