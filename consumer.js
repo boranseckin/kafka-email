@@ -10,8 +10,6 @@ const ses = new aws.SES({
     region: 'eu-central-1'
 });
 
-console.log('aws-sdk');
-
 const consumer = Kafka.consumer({ groupId: process.env.GROUP_ID });
 
 (async () => {

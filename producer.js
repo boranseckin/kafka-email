@@ -31,7 +31,7 @@ const producer = kafka.producer();
         } catch (error) {
             console.log('Error publishing message', error);
         }
-    }, 500);
+    }, 100);
 })().catch(async (error) => {
     console.error(error);
     await producer.disconnect();
