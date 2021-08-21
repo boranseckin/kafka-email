@@ -3,6 +3,15 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const Kafka = require('./kafka');
 
+const aws = require("@aws-sdk/client-ses");
+// const aws = require('aws-sdk');
+
+const ses = new aws.SES({
+    region: 'eu-central-1'
+});
+
+console.log('aws-sdk');
+
 const consumer = Kafka.consumer({ groupId: process.env.GROUP_ID });
 
 (async () => {
@@ -13,22 +22,17 @@ const consumer = Kafka.consumer({ groupId: process.env.GROUP_ID });
         fromBeginning: true,
     });
 
-    const { user, pass } = await nodemailer.createTestAccount();
     const transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: { user, pass },
-        pool: true,
+        SES: { ses, aws }
     });
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             try {
                 const email = JSON.parse(message.value);
-                const info = await transporter.sendMail(email);
-                console.log(`Message sent: ${info.messageId}`);
-                console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+                console.time(`${email.to}`);
+                await transporter.sendMail(email);
+                console.timeEnd(`${email.to}`);
             } catch (error) {
                 console.error(error);
             }
