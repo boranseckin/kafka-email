@@ -1,14 +1,7 @@
 require('dotenv').config();
 
-const nodemailer = require('nodemailer');
 const Kafka = require('./kafka');
-
-const aws = require("@aws-sdk/client-ses");
-// const aws = require('aws-sdk');
-
-const ses = new aws.SES({
-    region: 'eu-central-1'
-});
+const transporter = require('../transporter');
 
 const consumer = Kafka.consumer({ groupId: process.env.GROUP_ID });
 
@@ -18,11 +11,6 @@ const consumer = Kafka.consumer({ groupId: process.env.GROUP_ID });
     await consumer.subscribe({
         topic: process.env.TOPIC,
         fromBeginning: true,
-    });
-
-    const transporter = nodemailer.createTransport({
-        SES: { ses, aws },
-        sendingRate: 20,
     });
 
     await consumer.run({
